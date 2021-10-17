@@ -6,7 +6,7 @@ helpFunction()
 {
    echo ""
    echo "Usage: $0 -a addAll"
-   echo -e "\t-a Adds all modified files to the commit "
+   echo -e "\t-a Adds all new and modified files to the commit "
    exit 1 # Exit script after printing help
 }
 
@@ -37,21 +37,11 @@ function gac() {
      case "$opt" in
         a ) addAll="$OPTARG" ;;
         A ) addAll="$OPTARG" ;;
-#         ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
+        # ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
      esac
   done
 
-#   # Print helpFunction in case parameters are empty
-#   if [ -z "$addAll" ]
-#   then
-#      echo "Some or all of the parameters are empty";
-#      helpFunction
-#   fi
-
-
-
   SHORTCUT=$1
-  ARGUMENT=$2
   shift ;
 
   # Fix a bug
@@ -104,8 +94,6 @@ function gac() {
       # commit anyway
         if [ -z "$addAll" ]; then
            git add -A && git commit -m "$SHORTCUT" && git commit --amend
-#            echo "Some or all of the parameters are empty";
-#            helpFunction
         else
           git commit -m "$SHORTCUT" && git commit --amend
         fi
@@ -120,8 +108,6 @@ function gac() {
  
   if [ -z "$addAll" ]; then
      git add -A && git commit -m "$SHORTCUT" && git commit --amend
-      #            echo "Some or all of the parameters are empty";
-      #            helpFunction
   else
     git commit -m "$SHORTCUT" && git commit --amend
   fi
