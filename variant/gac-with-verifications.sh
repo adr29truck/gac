@@ -5,10 +5,8 @@
 helpFunction()
 {
    echo ""
-   echo "Usage: $0 -a addAll -A addAll"
+   echo "Usage: $0 -a addAll"
    echo -e "\t-a Adds all modified files to the commit "
-#    echo -e "\t-b Description of what is parameterB"
-#    echo -e "\t-c Description of what is parameterC"
    exit 1 # Exit script after printing help
 }
 
@@ -39,24 +37,22 @@ function gac() {
      case "$opt" in
         a ) addAll="$OPTARG" ;;
         A ) addAll="$OPTARG" ;;
-#         c ) parameterC="$OPTARG" ;;
-        ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
+#         ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
      esac
   done
 
-  # Print helpFunction in case parameters are empty
-  if [ -z "$addAll" ]
-  then
-     echo "Some or all of the parameters are empty";
-     helpFunction
-  fi
+#   # Print helpFunction in case parameters are empty
+#   if [ -z "$addAll" ]
+#   then
+#      echo "Some or all of the parameters are empty";
+#      helpFunction
+#   fi
 
 
 
   SHORTCUT=$1
   ARGUMENT=$2
   shift ;
-  COMMENT=$@
 
   # Fix a bug
   if [ "$SHORTCUT" = "b" ]; then
@@ -106,7 +102,14 @@ function gac() {
     RESPONSE=${RESPONSE:l} # response tolowercase
     if [[ $RESPONSE =~ ^(yes|y| ) ]] || [ -z $RESPONSE ]; then
       # commit anyway
-      git add -A && git commit -m "$SHORTCUT $COMMENT"
+        if [ -z "$addAll" ]; then
+           git add -A && git commit -m "$SHORTCUT" && git commit --amend
+#            echo "Some or all of the parameters are empty";
+#            helpFunction
+        else
+          git commit -m "$SHORTCUT" && git commit --amend
+        fi
+      
       return 1
     else 
       echo "Not Commited"
@@ -114,6 +117,13 @@ function gac() {
     fi
   fi
  
-  git add -A && git commit -m "$SHORTCUT $COMMENT"
+ 
+  if [ -z "$addAll" ]; then
+     git add -A && git commit -m "$SHORTCUT" && git commit --amend
+      #            echo "Some or all of the parameters are empty";
+      #            helpFunction
+  else
+    git commit -m "$SHORTCUT" && git commit --amend
+  fi
   return 1
 }
